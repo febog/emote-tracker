@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using EmoteTracker.Models;
 using Microsoft.EntityFrameworkCore;
-using EmoteTracker.Models;
 
 namespace EmoteTracker.Data
 {
@@ -14,6 +10,12 @@ namespace EmoteTracker.Data
         {
         }
 
-        public DbSet<EmoteTracker.Models.Emote> Emote { get; set; } = default!;
+        public DbSet<Emote> Emotes { get; set; }
+
+        public DbSet<EmoteService> EmoteServices { get; set; }
+
+        public DbSet<TwitchChannel> TwitchChannels { get; set; }
+
+        public DbSet<TwitchChannelEmote> TwitchChannelEmotes { get; set; }
     }
 }
