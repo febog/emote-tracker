@@ -18,6 +18,8 @@ namespace EmoteTracker
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddDbContext<EmoteTrackerContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("EmoteTrackerContext") ?? throw new InvalidOperationException("Connection string 'EmoteTrackerContext' not found.")));
             builder.Services.AddRazorPages();
 
             var app = builder.Build();
