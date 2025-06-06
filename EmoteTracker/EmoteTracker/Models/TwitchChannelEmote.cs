@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EmoteTracker.Models
 {
+    [PrimaryKey(nameof(EmoteId), nameof(TwitchChannelId))]
     public class TwitchChannelEmote
     {
         [Key, Column(Order = 1)]
