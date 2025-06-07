@@ -23,7 +23,13 @@ namespace EmoteTracker
                 options.UseSqlServer(builder.Configuration.GetConnectionString("EmoteTrackerContext") ?? throw new InvalidOperationException("Connection string 'EmoteTrackerContext' not found.")));
             builder.Services.AddRazorPages();
 
-            builder.Services.RegisterEmoteServices();
+            builder.Services.Configure<TwitchServiceOptions>(options =>
+            {
+                options.ClientId = builder.Configuration["Twitch:AppClientId"];
+                options.ClientSecret = builder.Configuration["Twitch:AppClientSecret"];
+            });
+
+            builder.Services.RegisterEmoteTrackerServices();
 
             var app = builder.Build();
 

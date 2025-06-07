@@ -17,6 +17,8 @@ namespace EmoteTracker.Services
 
         public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId)
         {
+            if (string.IsNullOrWhiteSpace(channelId)) return null;
+
             var response = await _httpClient.GetAsync(channelId);
             var content = await response.Content.ReadAsStreamAsync();
             using (var document = await JsonDocument.ParseAsync(content))
