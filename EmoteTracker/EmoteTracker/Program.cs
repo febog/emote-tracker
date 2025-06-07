@@ -1,4 +1,5 @@
 using EmoteTracker.Data;
+using EmoteTracker.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,8 @@ namespace EmoteTracker
             builder.Services.AddDbContext<EmoteTrackerContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("EmoteTrackerContext") ?? throw new InvalidOperationException("Connection string 'EmoteTrackerContext' not found.")));
             builder.Services.AddRazorPages();
+
+            builder.Services.RegisterEmoteServices();
 
             var app = builder.Build();
 

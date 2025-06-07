@@ -8,3 +8,29 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Emotes[0].CanonicalName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Emotes[0].Id)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emote in Model.Emotes)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => emote.CanonicalName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => emote.Id)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
