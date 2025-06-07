@@ -24,7 +24,9 @@ namespace EmoteTracker.Services
             // Twitch limits usernames to 25 characters
             if (username.Length > 25) return null;
 
-            string apiUrl = $"https://api.twitch.tv/helix/users?login={username}";
+            string query = Uri.EscapeDataString(username.Trim());
+
+            string apiUrl = $"https://api.twitch.tv/helix/users?login={query}";
             if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out Uri uri)) return null;
 
             using (var request = new HttpRequestMessage())
