@@ -20,6 +20,7 @@ namespace EmoteTracker.Services
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
             var response = await _httpClient.GetAsync(channelId);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
             var content = await response.Content.ReadAsStreamAsync();
             using (var document = await JsonDocument.ParseAsync(content))
             {
