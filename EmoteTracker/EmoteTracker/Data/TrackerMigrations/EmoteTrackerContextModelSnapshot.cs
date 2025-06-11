@@ -21,54 +21,6 @@ namespace EmoteTracker.Data.TrackerMigrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EmoteTracker.Models.Emote", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("CanonicalName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("EmoteServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Height")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsListed")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Width")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmoteServiceId");
-
-                    b.ToTable("Emotes");
-                });
-
-            modelBuilder.Entity("EmoteTracker.Models.EmoteService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmoteServices");
-                });
-
             modelBuilder.Entity("EmoteTracker.Models.TwitchChannel", b =>
                 {
                     b.Property<string>("Id")
@@ -101,6 +53,23 @@ namespace EmoteTracker.Data.TrackerMigrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("CanonicalName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("EmoteType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsListed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
                     b.HasKey("EmoteId", "TwitchChannelId");
 
                     b.HasIndex("TwitchChannelId");
@@ -108,39 +77,20 @@ namespace EmoteTracker.Data.TrackerMigrations
                     b.ToTable("TwitchChannelEmotes");
                 });
 
-            modelBuilder.Entity("EmoteTracker.Models.Emote", b =>
-                {
-                    b.HasOne("EmoteTracker.Models.EmoteService", "EmoteService")
-                        .WithMany("Emotes")
-                        .HasForeignKey("EmoteServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("EmoteService");
-                });
-
             modelBuilder.Entity("EmoteTracker.Models.TwitchChannelEmote", b =>
                 {
-                    b.HasOne("EmoteTracker.Models.Emote", "Emote")
-                        .WithMany()
-                        .HasForeignKey("EmoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EmoteTracker.Models.TwitchChannel", "TwitchChannel")
-                        .WithMany()
+                        .WithMany("TwitchChannelEmotes")
                         .HasForeignKey("TwitchChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Emote");
-
                     b.Navigation("TwitchChannel");
                 });
 
-            modelBuilder.Entity("EmoteTracker.Models.EmoteService", b =>
+            modelBuilder.Entity("EmoteTracker.Models.TwitchChannel", b =>
                 {
-                    b.Navigation("Emotes");
+                    b.Navigation("TwitchChannelEmotes");
                 });
 #pragma warning restore 612, 618
         }

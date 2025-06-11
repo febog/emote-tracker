@@ -20,8 +20,9 @@
     public enum ChannelEmoteType
     {
         // Do not reorder
-        FrankerEmote = 0,
-        BttvEmote = 1,
-        SevenEmote = 2
+        Other = 0,
+        FrankerEmote = 1,
+        BttvEmote = 2,
+        SevenEmote = 3
     }
 }

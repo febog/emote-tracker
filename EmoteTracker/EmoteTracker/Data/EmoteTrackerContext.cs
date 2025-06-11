@@ -10,10 +10,6 @@ namespace EmoteTracker.Data
         {
         }
 
-        public DbSet<Emote> Emotes { get; set; }
-
-        public DbSet<EmoteService> EmoteServices { get; set; }
-
         public DbSet<TwitchChannel> TwitchChannels { get; set; }
 
         public DbSet<TwitchChannelEmote> TwitchChannelEmotes { get; set; }

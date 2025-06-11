@@ -13,5 +13,7 @@ namespace EmoteTracker.Models
         [StringLength(25)]
         [Display(Name = "TWITCH_CHANNEL_DISPLAY_NAME")]
         public string DisplayName { get; set; }
+
+        public virtual ICollection<TwitchChannelEmote> TwitchChannelEmotes { get; set; }
     }
 }
