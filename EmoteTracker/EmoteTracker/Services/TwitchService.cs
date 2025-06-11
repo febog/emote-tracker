@@ -88,11 +88,7 @@ namespace EmoteTracker.Services
                 }
 
                 var content = await response.Content.ReadAsStreamAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                var data = await JsonSerializer.DeserializeAsync<TwitchUserResponse>(content, options);
+                var data = await JsonSerializer.DeserializeAsync<TwitchUserResponse>(content);
                 if (data.Data.Count == 0)
                 {
                     return null;
@@ -103,11 +99,13 @@ namespace EmoteTracker.Services
 
         public class TwitchUserResponse
         {
+            [JsonPropertyName("data")]
             public List<TwitchUser> Data { get; set; }
         }
 
         public class TwitchUser
         {
+            [JsonPropertyName("id")]
             public string Id { get; set; }
             [JsonPropertyName("display_name")]
             public string DisplayName { get; set; }
