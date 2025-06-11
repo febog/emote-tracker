@@ -45,12 +45,10 @@ namespace EmoteTracker.Services
                 var emptyTwitchChannel = new TwitchChannel();
                 emptyTwitchChannel.Id = channelId;
                 emptyTwitchChannel.DisplayName = await _twitchService.GetTwitchDisplayName(channelId);
+                emptyTwitchChannel.TwitchChannelEmotes = new List<TwitchChannelEmote>();
                 _context.TwitchChannels.Add(emptyTwitchChannel);
-                await _context.SaveChangesAsync();
 
-                channelToUpdate = await _context.TwitchChannels
-                    .Include(c => c.TwitchChannelEmotes)
-                    .FirstOrDefaultAsync(c => c.Id == channelId);
+                channelToUpdate = emptyTwitchChannel;
             }
 
             // Add new found emotes
