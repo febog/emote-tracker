@@ -61,6 +61,46 @@ namespace EmoteTracker.Services
             }
         }
 
+        public async Task<string> GetTwitchDisplayName(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId)) return null;
+
+            if (userId.Length > 20) return null;
+
+            string query = Uri.EscapeDataString(userId.Trim());
+
+            string apiUrl = $"https://api.twitch.tv/helix/users?id={query}";
+            if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out Uri uri)) return null;
+
+            using (var request = new HttpRequestMessage())
+            {
+                request.Method = HttpMethod.Get;
+                request.RequestUri = uri;
+                request.Headers.Add("Client-Id", _options.ClientId);
+                request.Headers.Add("Authorization", $"Bearer {await GetAppAccessToken()}");
+                var response = await _httpClient.SendAsync(request);
+
+                // If token fails, retry once with a forced fresh token
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    request.Headers.Add("Authorization", $"Bearer {await GetAppAccessToken(true)}");
+                    response = await _httpClient.SendAsync(request);
+                }
+
+                var content = await response.Content.ReadAsStreamAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var data = await JsonSerializer.DeserializeAsync<TwitchUserResponse>(content, options);
+                if (data.Data.Count == 0)
+                {
+                    return null;
+                }
+                return data.Data.Single().DisplayName;
+            }
+        }
+
         public class TwitchUserResponse
         {
             public List<TwitchUser> Data { get; set; }
@@ -69,6 +109,8 @@ namespace EmoteTracker.Services
         public class TwitchUser
         {
             public string Id { get; set; }
+            [JsonPropertyName("display_name")]
+            public string DisplayName { get; set; }
         }
 
         private async Task<string> GetAppAccessToken(bool forceRefresh = false)

@@ -7,12 +7,14 @@ namespace EmoteTracker.Services
     public class EmoteTrackerService(EmoteTrackerContext context,
         IFrankerService frankerService,
         IBttvService bttvService,
-        ISevenService sevenService) : IEmoteTrackerService
+        ISevenService sevenService,
+        ITwitchService twitchService) : IEmoteTrackerService
     {
         private readonly EmoteTrackerContext _context = context;
         private readonly IFrankerService _frankerService = frankerService;
         private readonly IBttvService _bttvService = bttvService;
         private readonly ISevenService _sevenService = sevenService;
+        private readonly ITwitchService _twitchService = twitchService;
 
         public async Task RefreshChannelEmotes(string channelId)
         {
@@ -42,7 +44,7 @@ namespace EmoteTracker.Services
             {
                 var emptyTwitchChannel = new TwitchChannel();
                 emptyTwitchChannel.Id = channelId;
-                emptyTwitchChannel.DisplayName = "foo";
+                emptyTwitchChannel.DisplayName = await _twitchService.GetTwitchDisplayName(channelId);
                 _context.TwitchChannels.Add(emptyTwitchChannel);
                 await _context.SaveChangesAsync();
 
