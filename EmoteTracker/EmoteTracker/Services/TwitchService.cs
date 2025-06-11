@@ -47,6 +47,8 @@ namespace EmoteTracker.Services
                     response = await _httpClient.SendAsync(request);
                 }
 
+                if (response.StatusCode != System.Net.HttpStatusCode.OK) return null;
+
                 var content = await response.Content.ReadAsStreamAsync();
                 var options = new JsonSerializerOptions
                 {
