@@ -24,6 +24,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                     </ul>
+                    <form method="get" asp-page="./search" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                        <input type="search" class="form-control" name="channel"
+                               placeholder="Channel..." aria-label="Channel">
+                    </form>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
