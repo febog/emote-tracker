@@ -10,6 +10,8 @@
 
             services.AddHttpClient<ITwitchService, TwitchService>();
 
+            services.AddTransient<IEmoteTrackerService, EmoteTrackerService>();
+
             return services;
         }
     }
