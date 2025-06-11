@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmoteTracker.Data.TrackerMigrations
 {
     [DbContext(typeof(EmoteTrackerContext))]
-    [Migration("20250606060917_InitialMigration")]
+    [Migration("20250611032744_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

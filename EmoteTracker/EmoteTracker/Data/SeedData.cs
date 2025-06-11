@@ -9,7 +9,7 @@ namespace EmoteTracker.Data
         {
             using (var context = new EmoteTrackerContext(serviceProvider.GetRequiredService<DbContextOptions<EmoteTrackerContext>>()))
             {
-                if (context == null || context.EmoteServices == null || context.TwitchAppAccessTokens == null)
+                if (context == null || context.EmoteServices == null)
                 {
                     throw new ArgumentNullException("Null EmoteTrackerContext");
                 }
@@ -28,17 +28,6 @@ namespace EmoteTracker.Data
                         new EmoteService
                         {
                             Name = "7TV"
-                        });
-                }
-
-                if (!context.TwitchAppAccessTokens.Any())
-                {
-                    context.TwitchAppAccessTokens.AddRange(
-                        new TwitchAppAccessToken
-                        {
-                            AccessToken = "token",
-                            ExpiresIn = 0,
-                            TokenType = "bearer"
                         });
                 }
 

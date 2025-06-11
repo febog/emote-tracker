@@ -69,32 +69,6 @@ namespace EmoteTracker.Data.TrackerMigrations
                     b.ToTable("EmoteServices");
                 });
 
-            modelBuilder.Entity("EmoteTracker.Models.TwitchAppAccessToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccessToken")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<int>("ExpiresIn")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TokenType")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TwitchAppAccessTokens");
-                });
-
             modelBuilder.Entity("EmoteTracker.Models.TwitchChannel", b =>
                 {
                     b.Property<string>("Id")
