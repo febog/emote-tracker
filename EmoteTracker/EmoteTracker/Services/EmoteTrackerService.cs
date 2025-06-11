@@ -36,7 +36,7 @@ namespace EmoteTracker.Services
 
             var channelToUpdate = await _context.TwitchChannels
                 .Include(c => c.TwitchChannelEmotes)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.Id == channelId);
 
             if (channelToUpdate == null)
             {
