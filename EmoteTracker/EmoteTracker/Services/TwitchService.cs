@@ -107,8 +107,8 @@ namespace EmoteTracker.Services
 
                 request.Content = new FormUrlEncodedContent(credentialsFlowData);
                 var response = await _httpClient.SendAsync(request);
-                var content = await response.Content.ReadAsStringAsync();
-                var data = JsonSerializer.Deserialize<CredentialsGrantFlowResponse>(content);
+                var content = await response.Content.ReadAsStreamAsync();
+                var data = await JsonSerializer.DeserializeAsync<CredentialsGrantFlowResponse>(content);
                 return data;
             }
         }
