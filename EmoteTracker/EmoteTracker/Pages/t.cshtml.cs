@@ -30,8 +30,11 @@ namespace EmoteTracker.Pages
                 return NotFound();
             }
 
-            // Force a refresh for now
-            await _tracker.RefreshChannelEmotes(userId);
+            // Check if previously tracked
+            if (await _context.TwitchChannels.FindAsync(userId) == null)
+            {
+                await _tracker.RefreshChannelEmotes(userId);
+            }
 
             var channelData = await _context.TwitchChannels
                     .Include(c => c.TwitchChannelEmotes)
