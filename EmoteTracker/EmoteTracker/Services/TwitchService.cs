@@ -31,15 +31,21 @@ namespace EmoteTracker.Services
             string apiUrl = $"https://api.twitch.tv/helix/users?login={query}";
             if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out Uri uri)) return null;
 
-            string appAccessToken = (await _context.TwitchAppAccessTokens.SingleAsync(x => x.TokenType == "bearer")).AccessToken;
-
             using (var request = new HttpRequestMessage())
             {
                 request.Method = HttpMethod.Get;
                 request.RequestUri = uri;
                 request.Headers.Add("Client-Id", _options.ClientId);
-                request.Headers.Add("Authorization", $"Bearer {appAccessToken}");
+                request.Headers.Add("Authorization", $"Bearer {await GetAppAccessToken()}");
                 var response = await _httpClient.SendAsync(request);
+
+                // If token fails, retry once with a forced fresh token
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    request.Headers.Add("Authorization", $"Bearer {await GetAppAccessToken(true)}");
+                    response = await _httpClient.SendAsync(request);
+                }
+
                 var content = await response.Content.ReadAsStreamAsync();
                 var options = new JsonSerializerOptions
                 {
@@ -64,12 +70,28 @@ namespace EmoteTracker.Services
             public string Id { get; set; }
         }
 
+        private async Task<string> GetAppAccessToken(bool forceRefresh = false)
+        {
+            if (forceRefresh)
+            {
+                var freshToken = await GetFreshAppAccessToken();
+                var tokenToRefresh = await _context.TwitchAppAccessTokens.SingleAsync(x => x.TokenType == "bearer");
+                tokenToRefresh.AccessToken = freshToken.AccessToken;
+                tokenToRefresh.ExpiresIn = freshToken.ExpiresIn;
+                tokenToRefresh.TokenType = freshToken.TokenType;
+                await _context.SaveChangesAsync();
+                return tokenToRefresh.AccessToken;
+            }
+
+            return (await _context.TwitchAppAccessTokens.SingleAsync(x => x.TokenType == "bearer")).AccessToken;
+        }
+
         /// <summary>
         /// Get a fresh app access token from Twitch.
         /// https://dev.twitch.tv/docs/authentication/#app-access-tokens
         /// </summary>
-        /// <returns>App access token.</returns>
-        private async Task<string> GetFreshAppAccessToken()
+        /// <returns>App access token response.</returns>
+        private async Task<CredentialsGrantFlowResponse> GetFreshAppAccessToken()
         {
             // Implements the client credentials grant flow to get an app access token
             // https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#client-credentials-grant-flow
@@ -89,7 +111,7 @@ namespace EmoteTracker.Services
                 var response = await _httpClient.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
                 var data = JsonSerializer.Deserialize<CredentialsGrantFlowResponse>(content);
-                return data.AccessToken;
+                return data;
             }
         }
 
