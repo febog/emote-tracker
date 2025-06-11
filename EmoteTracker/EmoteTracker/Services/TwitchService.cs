@@ -1,5 +1,4 @@
-﻿using EmoteTracker.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,13 +9,15 @@ namespace EmoteTracker.Services
     {
         private readonly HttpClient _httpClient;
         private readonly TwitchServiceOptions _options;
-        private readonly EmoteTrackerContext _context;
+        private readonly IMemoryCache _memoryCache;
 
-        public TwitchService(HttpClient httpClient, IOptions<TwitchServiceOptions> options, EmoteTrackerContext context)
+        private const string AppAccessTokenCacheKey = "twitch_app_access_token";
+
+        public TwitchService(HttpClient httpClient, IOptions<TwitchServiceOptions> options, IMemoryCache memoryCache)
         {
             _httpClient = httpClient;
             _options = options.Value;
-            _context = context;
+            _memoryCache = memoryCache;
         }
 
         public async Task<string> GetTwitchId(string username)
@@ -72,18 +73,15 @@ namespace EmoteTracker.Services
 
         private async Task<string> GetAppAccessToken(bool forceRefresh = false)
         {
-            if (forceRefresh)
+            if (forceRefresh || !_memoryCache.TryGetValue(AppAccessTokenCacheKey, out string appAccessToken))
             {
                 var freshToken = await GetFreshAppAccessToken();
-                var tokenToRefresh = await _context.TwitchAppAccessTokens.SingleAsync(x => x.TokenType == "bearer");
-                tokenToRefresh.AccessToken = freshToken.AccessToken;
-                tokenToRefresh.ExpiresIn = freshToken.ExpiresIn;
-                tokenToRefresh.TokenType = freshToken.TokenType;
-                await _context.SaveChangesAsync();
-                return tokenToRefresh.AccessToken;
+                // Cache the token for slightly less than its lifetime
+                _memoryCache.Set(AppAccessTokenCacheKey, freshToken.AccessToken, TimeSpan.FromSeconds(freshToken.ExpiresIn - 60));
+                return freshToken.AccessToken;
             }
 
-            return (await _context.TwitchAppAccessTokens.SingleAsync(x => x.TokenType == "bearer")).AccessToken;
+            return appAccessToken;
         }
 
         /// <summary>
