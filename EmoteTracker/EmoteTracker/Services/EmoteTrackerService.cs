@@ -48,7 +48,7 @@ namespace EmoteTracker.Services
 
                 channelToUpdate = await _context.TwitchChannels
                     .Include(c => c.TwitchChannelEmotes)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(c => c.Id == channelId);
             }
 
             // Add new found emotes
