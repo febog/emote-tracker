@@ -24,16 +24,16 @@ namespace EmoteTracker.Pages
                 return RedirectToPage("./Index");
             }
 
-            var userId = await _twitchService.GetTwitchId(channel);
-            if (string.IsNullOrEmpty(userId))
+            var channelId = await _twitchService.GetTwitchId(channel);
+            if (string.IsNullOrEmpty(channelId))
             {
                 return NotFound();
             }
 
             // Check if previously tracked
-            if (await _context.TwitchChannels.FindAsync(userId) == null)
+            if (await _context.TwitchChannels.FindAsync(channelId) == null)
             {
-                await _tracker.RefreshChannelEmotes(userId);
+                await _tracker.RefreshChannelEmotes(channelId);
             }
 
             var channelData = await _context.TwitchChannels
