@@ -38,6 +38,7 @@ namespace EmoteTracker.Pages
 
             var channelData = await _context.TwitchChannels
                     .Include(c => c.TwitchChannelEmotes)
+                    .AsNoTracking()
                     .FirstOrDefaultAsync();
 
             if (channelData == null)
