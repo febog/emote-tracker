@@ -27,7 +27,7 @@ namespace EmoteTracker.Services
                 var root = document.RootElement;
                 var emotes = root.GetProperty("emote_set").GetProperty("emotes");
 
-                return emotes.EnumerateArray().Select(e =>
+                var sevenEmotes = emotes.EnumerateArray().Select(e =>
                 {
                     var alias = e.GetProperty("name").ToString();
                     var canonicalName = e.GetProperty("data").GetProperty("name").ToString();
@@ -48,6 +48,21 @@ namespace EmoteTracker.Services
                         EmoteType = ChannelEmoteType.SevenEmote,
                     };
                 }).ToList();
+
+                // Turns out the 7TV API sometimes returns duplicate IDs i.e. the same emote more than once
+                // Remove duplicates
+                var seenIds = new HashSet<string>();
+                var result = new List<ChannelEmote>(sevenEmotes.Count);
+
+                foreach (var emote in sevenEmotes)
+                {
+                    if (seenIds.Add(emote.Id)) // Add returns false if already present
+                    {
+                        result.Add(emote);
+                    }
+                }
+
+                return result;
             }
         }
     }
