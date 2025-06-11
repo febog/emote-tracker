@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
-using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EmoteTracker.Services
 {
@@ -8,8 +8,6 @@ namespace EmoteTracker.Services
     {
         private readonly HttpClient _httpClient;
         private readonly TwitchServiceOptions _options;
-
-        private const string MyAppAccessToken = "sn3k5tkzc2pgu6b6t2aandzkbx31hq";
 
         public TwitchService(HttpClient httpClient, IOptions<TwitchServiceOptions> options)
         {
@@ -34,7 +32,7 @@ namespace EmoteTracker.Services
                 request.Method = HttpMethod.Get;
                 request.RequestUri = uri;
                 request.Headers.Add("Client-Id", _options.ClientId);
-                request.Headers.Add("Authorization", $"Bearer {MyAppAccessToken}");
+                request.Headers.Add("Authorization", $"Bearer {await GetFreshAppAccessToken()}");
                 var response = await _httpClient.SendAsync(request);
                 var content = await response.Content.ReadAsStreamAsync();
                 var options = new JsonSerializerOptions
@@ -58,6 +56,45 @@ namespace EmoteTracker.Services
         public class TwitchUser
         {
             public string Id { get; set; }
+        }
+
+        /// <summary>
+        /// Get a fresh app access token from Twitch.
+        /// https://dev.twitch.tv/docs/authentication/#app-access-tokens
+        /// </summary>
+        /// <returns>App access token.</returns>
+        private async Task<string> GetFreshAppAccessToken()
+        {
+            // Implements the client credentials grant flow to get an app access token
+            // https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#client-credentials-grant-flow
+            using (var request = new HttpRequestMessage())
+            {
+                request.Method = HttpMethod.Post;
+                request.RequestUri = new Uri("https://id.twitch.tv/oauth2/token");
+
+                var credentialsFlowData = new Dictionary<string, string>
+                {
+                    { "client_id", _options.ClientId },
+                    { "client_secret", _options.ClientSecret },
+                    { "grant_type", "client_credentials" }
+                };
+
+                request.Content = new FormUrlEncodedContent(credentialsFlowData);
+                var response = await _httpClient.SendAsync(request);
+                var content = await response.Content.ReadAsStringAsync();
+                var data = JsonSerializer.Deserialize<CredentialsGrantFlowResponse>(content);
+                return data.AccessToken;
+            }
+        }
+
+        private class CredentialsGrantFlowResponse
+        {
+            [JsonPropertyName("access_token")]
+            public string AccessToken { get; set; }
+            [JsonPropertyName("expires_in")]
+            public int ExpiresIn { get; set; }
+            [JsonPropertyName("token_type")]
+            public string TokenType { get; set; }
         }
     }
 
