@@ -43,7 +43,8 @@ namespace EmoteTracker.Services
                         Alias = emoteIsAliased ? alias : null,
                         Width = fileData.GetProperty("width").GetInt32(),
                         Height = fileData.GetProperty("height").GetInt32(),
-                        IsListed = true
+                        IsListed = true,
+                        EmoteType = ChannelEmoteType.SevenEmote,
                     };
                 }).ToList();
             }
