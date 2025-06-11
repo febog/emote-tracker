@@ -1,0 +1,37 @@
+﻿@page "{channel?}"
+@model EmoteTracker.Pages.TwitchChannelModel
+
+@Html.DisplayFor(m => m.TwitchChannel.Id)
+@Html.DisplayFor(m => m.TwitchChannel.DisplayName)
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TwitchChannel.TwitchChannelEmotes.ToList()[0].EmoteId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TwitchChannel.TwitchChannelEmotes.ToList()[0].CanonicalName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TwitchChannel.TwitchChannelEmotes.ToList()[0].EmoteType)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emote in Model.TwitchChannel.TwitchChannelEmotes)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => emote.EmoteId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => emote.CanonicalName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => emote.EmoteType)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

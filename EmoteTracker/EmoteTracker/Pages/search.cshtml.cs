@@ -15,7 +15,7 @@ namespace EmoteTracker.Pages
             {
                 return NotFound();
             }
-            return RedirectToPage("./Index", new { id = userId });
+            return RedirectToPage("./t", new { Channel = q });
         }
     }
 }
