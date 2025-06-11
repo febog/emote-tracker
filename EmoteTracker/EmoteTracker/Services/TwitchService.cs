@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using EmoteTracker.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -8,11 +10,13 @@ namespace EmoteTracker.Services
     {
         private readonly HttpClient _httpClient;
         private readonly TwitchServiceOptions _options;
+        private readonly EmoteTrackerContext _context;
 
-        public TwitchService(HttpClient httpClient, IOptions<TwitchServiceOptions> options)
+        public TwitchService(HttpClient httpClient, IOptions<TwitchServiceOptions> options, EmoteTrackerContext context)
         {
             _httpClient = httpClient;
             _options = options.Value;
+            _context = context;
         }
 
         public async Task<string> GetTwitchId(string username)
@@ -27,12 +31,14 @@ namespace EmoteTracker.Services
             string apiUrl = $"https://api.twitch.tv/helix/users?login={query}";
             if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out Uri uri)) return null;
 
+            string appAccessToken = (await _context.TwitchAppAccessTokens.SingleAsync(x => x.TokenType == "bearer")).AccessToken;
+
             using (var request = new HttpRequestMessage())
             {
                 request.Method = HttpMethod.Get;
                 request.RequestUri = uri;
                 request.Headers.Add("Client-Id", _options.ClientId);
-                request.Headers.Add("Authorization", $"Bearer {await GetFreshAppAccessToken()}");
+                request.Headers.Add("Authorization", $"Bearer {appAccessToken}");
                 var response = await _httpClient.SendAsync(request);
                 var content = await response.Content.ReadAsStreamAsync();
                 var options = new JsonSerializerOptions
