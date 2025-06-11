@@ -51,6 +51,8 @@ namespace EmoteTracker.Services
                     .FirstOrDefaultAsync();
             }
 
+            // Add new found emotes
+
             var channelEmotesHS = new HashSet<string>(channelToUpdate.TwitchChannelEmotes
                 .Select(e => e.EmoteId));
 
@@ -68,6 +70,19 @@ namespace EmoteTracker.Services
                         IsListed = emote.IsListed,
                         EmoteType = MapEmoteType(emote.EmoteType),
                     });
+                }
+            }
+
+            // Delete removed emotes
+
+            var trackedEmotesHS = new HashSet<string>(trackedEmotes.Select(e => e.Id));
+
+            foreach (var emote in channelToUpdate.TwitchChannelEmotes)
+            {
+                if (!trackedEmotesHS.Contains(emote.EmoteId))
+                {
+                    var emoteToRemove = channelToUpdate.TwitchChannelEmotes.Single(e => e.EmoteId == emote.EmoteId);
+                    channelToUpdate.TwitchChannelEmotes.Remove(emoteToRemove);
                 }
             }
 
