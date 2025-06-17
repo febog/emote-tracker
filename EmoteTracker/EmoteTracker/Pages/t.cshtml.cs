@@ -16,6 +16,7 @@ namespace EmoteTracker.Pages
         private readonly EmoteTrackerContext _context = context;
 
         public TwitchChannel TwitchChannel { get; set; }
+        public List<ChannelEmote> ChannelEmotes { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string channel)
         {
@@ -31,22 +32,16 @@ namespace EmoteTracker.Pages
             }
 
             // Check if previously tracked
-            if (await _context.TwitchChannels.FindAsync(channelId) == null)
+            var channelData = await _context.TwitchChannels.FindAsync(channelId);
+
+            if (channelData == null)
             {
                 await _tracker.RefreshChannelEmotes(channelId);
             }
 
-            var channelData = await _context.TwitchChannels
-                    .Include(c => c.TwitchChannelEmotes)
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(c => c.Id == channelId);
-
-            if (channelData == null)
-            {
-                return NotFound();
-            }
-
             TwitchChannel = channelData;
+
+            ChannelEmotes = await _tracker.GetChannelEmotes(channelId);
 
             return Page();
         }

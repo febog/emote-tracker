@@ -7,23 +7,32 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Emote</th>
             <th>
-                @Html.DisplayNameFor(model => model.TwitchChannel.TwitchChannelEmotes.ToList()[0].EmoteId)
+                @Html.DisplayNameFor(model => model.ChannelEmotes.ToList()[0].Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TwitchChannel.TwitchChannelEmotes.ToList()[0].CanonicalName)
+                @Html.DisplayNameFor(model => model.ChannelEmotes.ToList()[0].CanonicalName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TwitchChannel.TwitchChannelEmotes.ToList()[0].EmoteType)
+                @Html.DisplayNameFor(model => model.ChannelEmotes.ToList()[0].EmoteType)
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var emote in Model.TwitchChannel.TwitchChannelEmotes)
+        @foreach (var emote in Model.ChannelEmotes)
         {
             <tr>
+                <td class="align-middle" style="width: 1px">
+                    <img loading="lazy"
+                         width="@emote.Width"
+                         height="@emote.Height"
+                         src="@emote.ImageUrl"
+                         alt="@emote.CanonicalName emote in @emote.EmoteType"
+                         title="@emote.CanonicalName emote in @emote.EmoteType" />
+                </td>
                 <td>
-                    @Html.DisplayFor(modelItem => emote.EmoteId)
+                    @Html.DisplayFor(modelItem => emote.Id)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => emote.CanonicalName)
