@@ -1,6 +1,6 @@
 ﻿namespace EmoteTracker.Services
 {
-    public class ChannelEmote
+    public abstract class ChannelEmote
     {
         public string Id { get; set; }
 
@@ -15,6 +15,10 @@
         public bool IsListed { get; set; }
 
         public ChannelEmoteType EmoteType { get; set; }
+
+        public abstract string GetEmotePage();
+
+        public abstract string GetImageUrl();
     }
 
     public enum ChannelEmoteType

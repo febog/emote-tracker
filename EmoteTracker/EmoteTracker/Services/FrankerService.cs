@@ -28,7 +28,7 @@ namespace EmoteTracker.Services
                 var setId = root.GetProperty("room").GetProperty("set").ToString();
                 var emotes = root.GetProperty("sets").GetProperty(setId).GetProperty("emoticons");
 
-                return emotes.EnumerateArray().Select(e => new ChannelEmote
+                return emotes.EnumerateArray().Select(e => (ChannelEmote)new FrankerEmote
                 {
                     Id = e.GetProperty("id").ToString(),
                     CanonicalName = e.GetProperty("name").ToString(),

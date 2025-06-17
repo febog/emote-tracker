@@ -37,7 +37,7 @@ namespace EmoteTracker.Services
                     var fileData = e.GetProperty("data").GetProperty("host").GetProperty("files")
                     .EnumerateArray().First();
 
-                    return new ChannelEmote
+                    return new SevenEmote
                     {
                         Id = e.GetProperty("id").ToString(),
                         CanonicalName = canonicalName,
