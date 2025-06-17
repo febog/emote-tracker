@@ -109,7 +109,7 @@ namespace EmoteTracker.Services
         public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId)
         {
             var channelData = await _context.TwitchChannels
-                    .Include(c => c.TwitchChannelEmotes)
+                    .Include(c => c.TwitchChannelEmotes.OrderBy(e => e.CanonicalName))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(c => c.Id == channelId);
 
