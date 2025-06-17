@@ -35,7 +35,7 @@ namespace EmoteTracker.Services
                 {
                     Id = e.GetProperty("id").ToString(),
                     CanonicalName = e.GetProperty("code").ToString(),
-                    Width = 38,
+                    Width = 28,
                     Height = 28,
                     IsListed = true,
                 }));
