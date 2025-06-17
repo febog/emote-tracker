@@ -1,8 +1,11 @@
 ﻿@page "{channel?}"
 @model EmoteTracker.Pages.TwitchChannelModel
 
-@Html.DisplayFor(m => m.TwitchChannel.Id)
-@Html.DisplayFor(m => m.TwitchChannel.DisplayName)
+<h1>@Html.DisplayFor(m => m.TwitchChannel.DisplayName)'s emotes</h1>
+
+<p class="lead">Summary of the chat emotes from different extensions enabled in the channel.</p>
+
+<p>Website maintained with ♥ by <a href="https://febog.com">febog</a>. Source can be found on <a href="https://github.com/febog/emote-tracker">GitHub</a>.</p>
 
 <table class="table">
     <thead>
