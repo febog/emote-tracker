@@ -14,7 +14,7 @@
 
         public bool IsListed { get; set; }
 
-        public ChannelEmoteType EmoteType { get; set; }
+        public abstract ChannelEmoteType EmoteType { get; }
 
         public abstract string GetEmotePage();
 

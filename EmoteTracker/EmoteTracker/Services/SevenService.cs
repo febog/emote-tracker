@@ -45,7 +45,6 @@ namespace EmoteTracker.Services
                         Width = fileData.GetProperty("width").GetInt32(),
                         Height = fileData.GetProperty("height").GetInt32(),
                         IsListed = true,
-                        EmoteType = ChannelEmoteType.SevenEmote,
                     };
                 }).ToList();
 

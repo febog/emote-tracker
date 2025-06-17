@@ -35,7 +35,6 @@ namespace EmoteTracker.Services
                     Width = e.GetProperty("width").GetInt32(),
                     Height = e.GetProperty("height").GetInt32(),
                     IsListed = true,
-                    EmoteType = ChannelEmoteType.FrankerEmote,
                 }).ToList();
             }
         }

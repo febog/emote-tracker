@@ -2,6 +2,8 @@
 {
     public class FrankerEmote : ChannelEmote
     {
+        public override ChannelEmoteType EmoteType => ChannelEmoteType.FrankerEmote;
+
         public override string GetEmotePage()
         {
             return "https://www.frankerfacez.com/emoticon/" + Id + "-" + CanonicalName;

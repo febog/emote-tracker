@@ -2,6 +2,8 @@
 {
     public class SevenEmote : ChannelEmote
     {
+        public override ChannelEmoteType EmoteType => ChannelEmoteType.SevenEmote;
+
         public override string GetEmotePage()
         {
             return "https://cdn.7tv.app/emote/" + Id;

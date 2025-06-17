@@ -42,7 +42,6 @@ namespace EmoteTracker.Services
                     Width = 38,
                     Height = 28,
                     IsListed = true,
-                    EmoteType = ChannelEmoteType.BttvEmote,
                 }).ToList());
 
                 return emotes;
