@@ -16,9 +16,9 @@
 
         public abstract ChannelEmoteType EmoteType { get; }
 
-        public abstract string GetEmotePage();
+        public abstract string EmotePage { get; }
 
-        public abstract string GetImageUrl();
+        public abstract string ImageUrl { get; }
     }
 
     public enum ChannelEmoteType
