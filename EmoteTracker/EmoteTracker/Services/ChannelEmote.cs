@@ -6,6 +6,7 @@ namespace EmoteTracker.Services
     {
         public string Id { get; set; }
 
+        [Display(Name = "Name")]
         public string CanonicalName { get; set; }
 
         public string Alias { get; set; }
@@ -16,6 +17,7 @@ namespace EmoteTracker.Services
 
         public bool IsListed { get; set; }
 
+        [Display(Name = "Type")]
         public abstract ChannelEmoteType EmoteType { get; }
 
         public abstract string EmotePage { get; }
