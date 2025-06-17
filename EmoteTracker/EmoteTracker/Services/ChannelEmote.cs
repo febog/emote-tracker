@@ -1,4 +1,6 @@
-﻿namespace EmoteTracker.Services
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EmoteTracker.Services
 {
     public abstract class ChannelEmote
     {
@@ -25,8 +27,11 @@
     {
         // Do not reorder
         Other = 0,
+        [Display(Name = "FFZ")]
         FrankerEmote = 1,
+        [Display(Name = "BTTV")]
         BttvEmote = 2,
+        [Display(Name = "7TV")]
         SevenEmote = 3
     }
 }

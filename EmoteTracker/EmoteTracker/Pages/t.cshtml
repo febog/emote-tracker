@@ -28,15 +28,15 @@
                          width="@emote.Width"
                          height="@emote.Height"
                          src="@emote.ImageUrl"
-                         alt="@emote.CanonicalName emote in @emote.EmoteType"
-                         title="@emote.CanonicalName emote in @emote.EmoteType" />
+                         alt="@emote.CanonicalName emote in @Html.DisplayFor(modelItem => emote.EmoteType)"
+                         title="@emote.CanonicalName emote in @Html.DisplayFor(modelItem => emote.EmoteType)" />
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => emote.CanonicalName)
                 </td>
                 <td>
                     <a href="@emote.EmotePage" target="_blank" rel="noopener noreferrer"
-                       title="Go to @emote.CanonicalName emote page in @emote.EmoteType">@Html.DisplayFor(modelItem => emote.Id)</a>
+                       title="Go to @emote.CanonicalName emote page in @Html.DisplayFor(modelItem => emote.EmoteType)">@Html.DisplayFor(modelItem => emote.Id)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => emote.EmoteType)
