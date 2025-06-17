@@ -5,18 +5,15 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Emote tracker</h1>
+    <h1 class="display-3">Emote tracker</h1>
     <p>All your emotes in one place.</p>
     <search>
-        <form method="get" asp-page="./search" class="row row-cols-lg-auto g-3 align-items-center justify-content-center">
-            <div class="col-12">
-                <label for="channel-search-input">Channel:</label>
-            </div>
-            <div class="col-12">
-                <input type="text" name="channel" class="form-control" id="channel-search-input" placeholder="Username">
-            </div>
-            <div class="col-12">
-                <input type="submit" value="Go" class="btn btn-primary" />
+        <form method="get" asp-page="./search" class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <input type="search" class="form-control" placeholder="Channel" aria-label="Search channel" aria-describedby="channel-search" name="channel">
+                    <button class="btn btn-outline-secondary" type="submit" id="channel-search">Search</button>
+                </div>
             </div>
         </form>
     </search>
