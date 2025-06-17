@@ -105,5 +105,59 @@ namespace EmoteTracker.Services
                     return EmoteType.Other;
             }
         }
+
+        public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId)
+        {
+            var channelData = await _context.TwitchChannels
+                    .Include(c => c.TwitchChannelEmotes)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id == channelId);
+
+            var emotes = new List<ChannelEmote>(channelData.TwitchChannelEmotes.Count);
+
+            emotes.AddRange(channelData.TwitchChannelEmotes.Select(e =>
+            {
+                ChannelEmote emote;
+                switch(e.EmoteType)
+                {
+                    case EmoteType.FrankerEmote:
+                        emote = new FrankerEmote
+                        {
+                            Id = e.EmoteId,
+                            CanonicalName = e.CanonicalName,
+                            Width = e.Width,
+                            Height = e.Height,
+                            IsListed = e.IsListed,
+                        };
+                        break;
+                    case EmoteType.BttvEmote:
+                        emote = new BttvEmote
+                        {
+                            Id = e.EmoteId,
+                            CanonicalName = e.CanonicalName,
+                            Width = e.Width,
+                            Height = e.Height,
+                            IsListed = e.IsListed,
+                        };
+                        break;
+                    case EmoteType.SevenEmote:
+                        emote = new SevenEmote
+                        {
+                            Id = e.EmoteId,
+                            CanonicalName = e.CanonicalName,
+                            Alias = e.Alias,
+                            Width = e.Width,
+                            Height = e.Height,
+                            IsListed = e.IsListed,
+                        };
+                        break;
+                    default:
+                        throw new ArgumentException("Emote type error.");
+                }
+                return emote;
+            }));
+
+            return emotes;
+        }
     }
 }
