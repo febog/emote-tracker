@@ -26,23 +26,19 @@ namespace EmoteTracker.Services
             {
                 var root = document.RootElement;
                 // This API returns the chat emotes in 2 sets: "channel" and "shared". Image dimensions taken empirically from website. Not explicitly set in API.
-                var emotes = root.GetProperty("channelEmotes").EnumerateArray().Select(e => (ChannelEmote)new BttvEmote
-                {
-                    Id = e.GetProperty("id").ToString(),
-                    CanonicalName = e.GetProperty("code").ToString(),
-                    Width = 38,
-                    Height = 28,
-                    IsListed = true,
-                }).ToList();
+                var responseEmotes = root.GetProperty("channelEmotes").EnumerateArray().ToList();
+                responseEmotes.AddRange(root.GetProperty("sharedEmotes").EnumerateArray().ToList());
 
-                emotes.AddRange(root.GetProperty("sharedEmotes").EnumerateArray().Select(e => (ChannelEmote)new BttvEmote
+                var emotes = new List<ChannelEmote>(responseEmotes.Count);
+
+                emotes.AddRange(responseEmotes.Select(e => new BttvEmote
                 {
                     Id = e.GetProperty("id").ToString(),
                     CanonicalName = e.GetProperty("code").ToString(),
                     Width = 38,
                     Height = 28,
                     IsListed = true,
-                }).ToList());
+                }));
 
                 return emotes;
             }
