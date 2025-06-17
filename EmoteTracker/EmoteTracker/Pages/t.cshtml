@@ -9,10 +9,10 @@
         <tr>
             <th>Emote</th>
             <th>
-                @Html.DisplayNameFor(model => model.ChannelEmotes.ToList()[0].Id)
+                @Html.DisplayNameFor(model => model.ChannelEmotes.ToList()[0].CanonicalName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ChannelEmotes.ToList()[0].CanonicalName)
+                @Html.DisplayNameFor(model => model.ChannelEmotes.ToList()[0].Id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ChannelEmotes.ToList()[0].EmoteType)
@@ -32,10 +32,11 @@
                          title="@emote.CanonicalName emote in @emote.EmoteType" />
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => emote.Id)
+                    @Html.DisplayFor(modelItem => emote.CanonicalName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => emote.CanonicalName)
+                    <a href="@emote.EmotePage" target="_blank" rel="noopener noreferrer"
+                       title="Go to @emote.CanonicalName emote page in @emote.EmoteType">@Html.DisplayFor(modelItem => emote.Id)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => emote.EmoteType)
