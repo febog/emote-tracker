@@ -15,7 +15,7 @@ namespace EmoteTracker.Services.EmoteProviders.Bttv
             _httpClient = httpClient;
         }
 
-        public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId)
+        public async Task<List<IProviderEmote>> GetChannelEmotes(string channelId)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
@@ -29,7 +29,7 @@ namespace EmoteTracker.Services.EmoteProviders.Bttv
                 var responseEmotes = root.GetProperty("channelEmotes").EnumerateArray().ToList();
                 responseEmotes.AddRange(root.GetProperty("sharedEmotes").EnumerateArray().ToList());
 
-                var emotes = new List<ChannelEmote>(responseEmotes.Count);
+                var emotes = new List<IProviderEmote>(responseEmotes.Count);
 
                 emotes.AddRange(responseEmotes.Select(e => new BttvEmote
                 {

@@ -1,5 +1,6 @@
 ﻿using EmoteTracker.Data;
 using EmoteTracker.Models;
+using EmoteTracker.Services.EmoteProviders;
 using EmoteTracker.Services.EmoteProviders.Bttv;
 using EmoteTracker.Services.EmoteProviders.Franker;
 using EmoteTracker.Services.EmoteProviders.Seven;
@@ -30,7 +31,7 @@ namespace EmoteTracker.Services
             var sevenEmotes = await _sevenService.GetChannelEmotes(channelId);
             if (sevenEmotes == null) throw new ArgumentException("SevenTV emotes could not be loaded.");
 
-            var trackedEmotes = new List<ChannelEmote>(
+            var trackedEmotes = new List<IProviderEmote>(
                 frankerEmotes.Count +
                 bttvEmotes.Count +
                 sevenEmotes.Count);
@@ -109,7 +110,7 @@ namespace EmoteTracker.Services
             }
         }
 
-        public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId, bool forceRefresh = false)
+        public async Task<List<IProviderEmote>> GetChannelEmotes(string channelId, bool forceRefresh = false)
         {
             var channelData = await _context.TwitchChannels
                     .Include(c => c.TwitchChannelEmotes.OrderBy(e => e.CanonicalName))
@@ -125,7 +126,7 @@ namespace EmoteTracker.Services
                     .FirstOrDefaultAsync(c => c.Id == channelId);
             }
 
-            var emotes = new List<ChannelEmote>(channelData.TwitchChannelEmotes.Count);
+            var emotes = new List<IProviderEmote>(channelData.TwitchChannelEmotes.Count);
 
             emotes.AddRange(channelData.TwitchChannelEmotes.Select(e =>
             {

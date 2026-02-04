@@ -15,7 +15,7 @@ namespace EmoteTracker.Services.EmoteProviders.Franker
             _httpClient = httpClient;
         }
 
-        public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId)
+        public async Task<List<IProviderEmote>> GetChannelEmotes(string channelId)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
@@ -28,7 +28,7 @@ namespace EmoteTracker.Services.EmoteProviders.Franker
                 var setId = root.GetProperty("room").GetProperty("set").ToString();
                 var emotes = root.GetProperty("sets").GetProperty(setId).GetProperty("emoticons");
 
-                return emotes.EnumerateArray().Select(e => (ChannelEmote)new FrankerEmote
+                return emotes.EnumerateArray().Select(e => (IProviderEmote)new FrankerEmote
                 {
                     Id = e.GetProperty("id").ToString(),
                     CanonicalName = e.GetProperty("name").ToString(),

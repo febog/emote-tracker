@@ -15,7 +15,7 @@ namespace EmoteTracker.Services.EmoteProviders.Seven
             _httpClient = httpClient;
         }
 
-        public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId)
+        public async Task<List<IProviderEmote>> GetChannelEmotes(string channelId)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
@@ -51,7 +51,7 @@ namespace EmoteTracker.Services.EmoteProviders.Seven
                 // Turns out the 7TV API sometimes returns duplicate IDs i.e. the same emote more than once
                 // Remove duplicates
                 var seenIds = new HashSet<string>();
-                var result = new List<ChannelEmote>(sevenEmotes.Count);
+                var result = new List<IProviderEmote>(sevenEmotes.Count);
 
                 foreach (var emote in sevenEmotes)
                 {

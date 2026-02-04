@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EmoteTracker.Services
+namespace EmoteTracker.Services.EmoteProviders
 {
-    public abstract class ChannelEmote
+    public abstract class ChannelEmote : IProviderEmote
     {
         public string Id { get; set; }
 

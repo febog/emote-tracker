@@ -1,6 +1,7 @@
 using EmoteTracker.Data;
 using EmoteTracker.Models;
 using EmoteTracker.Services;
+using EmoteTracker.Services.EmoteProviders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -15,7 +16,7 @@ namespace EmoteTracker.Pages
         private readonly EmoteTrackerContext _context = context;
 
         public TwitchChannel TwitchChannel { get; set; }
-        public List<ChannelEmote> ChannelEmotes { get; set; }
+        public List<IProviderEmote> ChannelEmotes { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string channel, bool refresh = false)
         {
