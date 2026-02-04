@@ -1,6 +1,6 @@
 ﻿namespace EmoteTracker.Services.EmoteProviders.Bttv
 {
-    public class BttvEmote : ChannelEmote
+    public class BttvEmote : ProviderEmote
     {
         public override ChannelEmoteType EmoteType => ChannelEmoteType.BttvEmote;
 

@@ -1,6 +1,6 @@
 ﻿namespace EmoteTracker.Services.EmoteProviders.Franker
 {
-    public class FrankerEmote : ChannelEmote
+    public class FrankerEmote : ProviderEmote
     {
         public override ChannelEmoteType EmoteType => ChannelEmoteType.FrankerEmote;
 

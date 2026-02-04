@@ -1,6 +1,6 @@
 ﻿namespace EmoteTracker.Services.EmoteProviders.Seven
 {
-    public class SevenEmote : ChannelEmote
+    public class SevenEmote : ProviderEmote
     {
         public override ChannelEmoteType EmoteType => ChannelEmoteType.SevenEmote;
 
