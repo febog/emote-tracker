@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace EmoteTracker.Services
+namespace EmoteTracker.Services.EmoteProviders.Bttv
 {
     public class BttvService : IBttvService
     {

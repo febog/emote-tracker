@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace EmoteTracker.Services
+namespace EmoteTracker.Services.EmoteProviders.Seven
 {
     public class SevenService : ISevenService
     {

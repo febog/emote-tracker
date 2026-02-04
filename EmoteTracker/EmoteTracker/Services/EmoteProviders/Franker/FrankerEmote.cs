@@ -1,4 +1,4 @@
-﻿namespace EmoteTracker.Services
+﻿namespace EmoteTracker.Services.EmoteProviders.Franker
 {
     public class FrankerEmote : ChannelEmote
     {

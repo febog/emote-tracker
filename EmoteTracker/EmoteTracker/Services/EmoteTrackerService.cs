@@ -1,5 +1,8 @@
 ﻿using EmoteTracker.Data;
 using EmoteTracker.Models;
+using EmoteTracker.Services.EmoteProviders.Bttv;
+using EmoteTracker.Services.EmoteProviders.Franker;
+using EmoteTracker.Services.EmoteProviders.Seven;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmoteTracker.Services

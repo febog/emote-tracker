@@ -1,4 +1,4 @@
-﻿namespace EmoteTracker.Services
+﻿namespace EmoteTracker.Services.EmoteProviders.Bttv
 {
     public class BttvEmote : ChannelEmote
     {
