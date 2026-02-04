@@ -8,7 +8,8 @@ namespace EmoteTracker.Pages
     {
         public async Task<IActionResult> OnGetAsync(string channel)
         {
-            return RedirectToPage("./t", new { channel });
+            var channelName = channel.Trim().ToLower();
+            return RedirectToPage("./t", new { channel = channelName });
         }
     }
 }
