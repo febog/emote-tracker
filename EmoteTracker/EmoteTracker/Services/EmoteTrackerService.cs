@@ -130,7 +130,7 @@ namespace EmoteTracker.Services
 
             emotes.AddRange(channelData.TwitchChannelEmotes.Select(e =>
             {
-                ChannelEmote emote;
+                IProviderEmote emote;
                 switch(e.EmoteType)
                 {
                     case EmoteType.FrankerEmote:
