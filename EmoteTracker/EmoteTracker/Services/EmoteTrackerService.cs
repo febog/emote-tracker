@@ -72,7 +72,7 @@ namespace EmoteTracker.Services
                         Width = emote.Width,
                         Height = emote.Height,
                         IsListed = emote.IsListed,
-                        EmoteType = MapEmoteType(emote.EmoteType),
+                        EmoteType = MapEmoteType(emote.Provider),
                     });
                 }
             }
@@ -93,17 +93,17 @@ namespace EmoteTracker.Services
             await _context.SaveChangesAsync();
         }
 
-        private static EmoteType MapEmoteType(ChannelEmoteType type)
+        private static EmoteType MapEmoteType(EmoteProvider type)
         {
             switch (type)
             {
-                case ChannelEmoteType.Other:
+                case EmoteProvider.Unknown:
                     return EmoteType.Other;
-                case ChannelEmoteType.FrankerEmote:
+                case EmoteProvider.FrankerEmote:
                     return EmoteType.FrankerEmote;
-                case ChannelEmoteType.BttvEmote:
+                case EmoteProvider.BttvEmote:
                     return EmoteType.BttvEmote;
-                case ChannelEmoteType.SevenEmote:
+                case EmoteProvider.SevenEmote:
                     return EmoteType.SevenEmote;
                 default:
                     return EmoteType.Other;

@@ -2,7 +2,7 @@
 {
     public class BttvEmote : ProviderEmote
     {
-        public override ChannelEmoteType EmoteType => ChannelEmoteType.BttvEmote;
+        public override EmoteProvider Provider => EmoteProvider.BttvEmote;
 
         public override string EmotePage => "https://betterttv.com/emotes/" + Id;
 
