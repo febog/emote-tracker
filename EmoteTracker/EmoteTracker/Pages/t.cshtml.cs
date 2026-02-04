@@ -3,7 +3,6 @@ using EmoteTracker.Models;
 using EmoteTracker.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace EmoteTracker.Pages
 {
@@ -20,11 +19,6 @@ namespace EmoteTracker.Pages
 
         public async Task<IActionResult> OnGetAsync(string channel)
         {
-            if (string.IsNullOrEmpty(channel))
-            {
-                return RedirectToPage("./Index");
-            }
-
             var channelId = await _twitchService.GetTwitchId(channel);
             if (string.IsNullOrEmpty(channelId))
             {
@@ -37,6 +31,7 @@ namespace EmoteTracker.Pages
             if (channelData == null)
             {
                 await _tracker.RefreshChannelEmotes(channelId);
+                channelData = await _context.TwitchChannels.FindAsync(channelId);
             }
 
             TwitchChannel = channelData;
