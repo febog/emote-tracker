@@ -4,9 +4,9 @@ namespace EmoteTracker.Services
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection RegisterEmoteTrackerServices(this IServiceCollection services)
+        public static IServiceCollection RegisterEmoteTrackerServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.RegisterEmoteProviders();
+            services.RegisterEmoteProviders(configuration.GetSection(EmoteProvidersOptions.EmoteProviders));
 
             services.AddHttpClient<ITwitchService, TwitchService>();
 

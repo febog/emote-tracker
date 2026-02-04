@@ -6,11 +6,12 @@ namespace EmoteTracker.Services.EmoteProviders
 {
     public static class EmoteProvidersRegistration
     {
-        public static IServiceCollection RegisterEmoteProviders(this IServiceCollection services)
+        public static IServiceCollection RegisterEmoteProviders(this IServiceCollection services, IConfigurationSection configuration)
         {
-            services.AddHttpClient<IBttvService, BttvService>(client => client.BaseAddress = new Uri("https://api.betterttv.net/3/cached/users/twitch/"));
-            services.AddHttpClient<IFrankerService, FrankerService>(client => client.BaseAddress = new Uri("https://api.frankerfacez.com/v1/room/id/"));
-            services.AddHttpClient<ISevenService, SevenService>(client => client.BaseAddress = new Uri("https://7tv.io/v3/users/twitch/"));
+            var options = configuration.Get<EmoteProvidersOptions>();
+            services.AddHttpClient<IBttvService, BttvService>(client => client.BaseAddress = new Uri(options.BttvServiceOptions.BaseAddress));
+            services.AddHttpClient<IFrankerService, FrankerService>(client => client.BaseAddress = new Uri(options.FrankerServiceOptions.BaseAddress));
+            services.AddHttpClient<ISevenService, SevenService>(client => client.BaseAddress = new Uri(options.SevenServiceOptions.BaseAddress));
 
             return services;
         }

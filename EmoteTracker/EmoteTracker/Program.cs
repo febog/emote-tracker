@@ -29,7 +29,7 @@ namespace EmoteTracker
                 options.ClientSecret = builder.Configuration["Twitch:AppClientSecret"];
             });
 
-            builder.Services.RegisterEmoteTrackerServices();
+            builder.Services.RegisterEmoteTrackerServices(builder.Configuration);
 
             var app = builder.Build();
 
