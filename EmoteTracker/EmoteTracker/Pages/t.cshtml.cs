@@ -17,7 +17,7 @@ namespace EmoteTracker.Pages
         public TwitchChannel TwitchChannel { get; set; }
         public List<ChannelEmote> ChannelEmotes { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string channel)
+        public async Task<IActionResult> OnGetAsync(string channel, bool refresh = false)
         {
             var channelId = await _twitchService.GetTwitchId(channel);
             if (string.IsNullOrEmpty(channelId))
@@ -36,7 +36,7 @@ namespace EmoteTracker.Pages
 
             TwitchChannel = channelData;
 
-            ChannelEmotes = await _tracker.GetChannelEmotes(channelId);
+            ChannelEmotes = await _tracker.GetChannelEmotes(channelId, refresh);
 
             return Page();
         }

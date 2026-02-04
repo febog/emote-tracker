@@ -106,12 +106,21 @@ namespace EmoteTracker.Services
             }
         }
 
-        public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId)
+        public async Task<List<ChannelEmote>> GetChannelEmotes(string channelId, bool forceRefresh = false)
         {
             var channelData = await _context.TwitchChannels
                     .Include(c => c.TwitchChannelEmotes.OrderBy(e => e.CanonicalName))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(c => c.Id == channelId);
+
+            if (channelData == null || forceRefresh)
+            {
+                await RefreshChannelEmotes(channelId);
+                channelData = await _context.TwitchChannels
+                    .Include(c => c.TwitchChannelEmotes.OrderBy(e => e.CanonicalName))
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id == channelId);
+            }
 
             var emotes = new List<ChannelEmote>(channelData.TwitchChannelEmotes.Count);
 
