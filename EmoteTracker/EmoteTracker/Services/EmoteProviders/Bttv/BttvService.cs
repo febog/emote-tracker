@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EmoteTracker.Services.EmoteProviders.Bttv
 {
@@ -15,33 +16,43 @@ namespace EmoteTracker.Services.EmoteProviders.Bttv
             _httpClient = httpClient;
         }
 
-        public async Task<List<IProviderEmote>> GetChannelEmotes(string channelId)
+        public async Task<IEnumerable<IProviderEmote>> GetChannelEmotes(string channelId)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
             var response = await _httpClient.GetAsync(channelId);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
             var content = await response.Content.ReadAsStreamAsync();
-            using (var document = await JsonDocument.ParseAsync(content))
+            var data = await JsonSerializer.DeserializeAsync<BttvResponse>(content);
+            var bttvEmotes = data.ChannelEmotes.Concat(data.SharedEmotes).Select(e => new BttvEmote
             {
-                var root = document.RootElement;
-                // This API returns the chat emotes in 2 sets: "channel" and "shared". Image dimensions taken empirically from website. Not explicitly set in API.
-                var responseEmotes = root.GetProperty("channelEmotes").EnumerateArray().ToList();
-                responseEmotes.AddRange(root.GetProperty("sharedEmotes").EnumerateArray().ToList());
+                Id = e.Id,
+                CanonicalName = e.Code,
+                Width = 28,
+                Height = 28,
+                IsListed = true,
+            });
 
-                var emotes = new List<IProviderEmote>(responseEmotes.Count);
+            return bttvEmotes;
+        }
 
-                emotes.AddRange(responseEmotes.Select(e => new BttvEmote
-                {
-                    Id = e.GetProperty("id").ToString(),
-                    CanonicalName = e.GetProperty("code").ToString(),
-                    Width = 28,
-                    Height = 28,
-                    IsListed = true,
-                }));
+        private class BttvResponse
+        {
+            [JsonPropertyName("channelEmotes")]
+            public List<BttvEmoticon> ChannelEmotes { get; set; }
 
-                return emotes;
-            }
+            [JsonPropertyName("sharedEmotes")]
+            public List<BttvEmoticon> SharedEmotes { get; set; }
+        }
+
+        private class BttvEmoticon
+        {
+            [JsonPropertyName("id")]
+            public string Id { get; set; }
+
+            [JsonPropertyName("code")]
+            public string Code { get; set; }
+
         }
     }
 }

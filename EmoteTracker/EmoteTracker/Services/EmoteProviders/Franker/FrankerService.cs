@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EmoteTracker.Services.EmoteProviders.Franker
 {
@@ -15,28 +16,64 @@ namespace EmoteTracker.Services.EmoteProviders.Franker
             _httpClient = httpClient;
         }
 
-        public async Task<List<IProviderEmote>> GetChannelEmotes(string channelId)
+        public async Task<IEnumerable<IProviderEmote>> GetChannelEmotes(string channelId)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
             var response = await _httpClient.GetAsync(channelId);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
             var content = await response.Content.ReadAsStreamAsync();
-            using (var document = await JsonDocument.ParseAsync(content))
+            var data = await JsonSerializer.DeserializeAsync<FrankerResponse>(content);
+            var setId = data.Room.Set;
+            var frankerEmotes = data.Sets[setId.ToString()].Emoticons.Select(e =>
             {
-                var root = document.RootElement;
-                var setId = root.GetProperty("room").GetProperty("set").ToString();
-                var emotes = root.GetProperty("sets").GetProperty(setId).GetProperty("emoticons");
-
-                return emotes.EnumerateArray().Select(e => (IProviderEmote)new FrankerEmote
+                return new FrankerEmote
                 {
-                    Id = e.GetProperty("id").ToString(),
-                    CanonicalName = e.GetProperty("name").ToString(),
-                    Width = e.GetProperty("width").GetInt32(),
-                    Height = e.GetProperty("height").GetInt32(),
+                    Id = e.Id.ToString(),
+                    CanonicalName = e.Name,
+                    Width = e.Width,
+                    Height = e.Height,
                     IsListed = true,
-                }).ToList();
-            }
+                };
+            });
+
+            return frankerEmotes;
+        }
+
+        private class FrankerResponse
+        {
+            [JsonPropertyName("room")]
+            public FrankerRoom Room { get; set; }
+
+            [JsonPropertyName("sets")]
+            public Dictionary<string, FrankerSet> Sets { get; set; }
+        }
+
+        private class FrankerRoom
+        {
+            [JsonPropertyName("set")]
+            public int Set { get; set; }
+        }
+
+        private class FrankerSet
+        {
+            [JsonPropertyName("emoticons")]
+            public List<FrankerEmoticon> Emoticons { get; set; }
+        }
+
+        private class FrankerEmoticon
+        {
+            [JsonPropertyName("id")]
+            public int Id { get; set; }
+
+            [JsonPropertyName("name")]
+            public string Name { get; set; }
+
+            [JsonPropertyName("width")]
+            public int Width { get; set; }
+
+            [JsonPropertyName("height")]
+            public int Height { get; set; }
         }
     }
 }

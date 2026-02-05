@@ -31,14 +31,7 @@ namespace EmoteTracker.Services
             var sevenEmotes = await _sevenService.GetChannelEmotes(channelId);
             if (sevenEmotes == null) throw new ArgumentException("SevenTV emotes could not be loaded.");
 
-            var trackedEmotes = new List<IProviderEmote>(
-                frankerEmotes.Count +
-                bttvEmotes.Count +
-                sevenEmotes.Count);
-
-            trackedEmotes.AddRange(frankerEmotes);
-            trackedEmotes.AddRange(bttvEmotes);
-            trackedEmotes.AddRange(sevenEmotes);
+            var trackedEmotes = frankerEmotes.Concat(bttvEmotes).Concat(sevenEmotes);
 
             var channelToUpdate = await _context.TwitchChannels
                 .Include(c => c.TwitchChannelEmotes)

@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using EmoteTracker.Services.EmoteProviders.Franker;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EmoteTracker.Services.EmoteProviders.Seven
 {
@@ -15,54 +17,90 @@ namespace EmoteTracker.Services.EmoteProviders.Seven
             _httpClient = httpClient;
         }
 
-        public async Task<List<IProviderEmote>> GetChannelEmotes(string channelId)
+        public async Task<IEnumerable<IProviderEmote>> GetChannelEmotes(string channelId)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
             var response = await _httpClient.GetAsync(channelId);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
             var content = await response.Content.ReadAsStreamAsync();
-            using (var document = await JsonDocument.ParseAsync(content))
+            var data = await JsonSerializer.DeserializeAsync<SevenResponse>(content);
+            var sevenEmotes = data.EmoteSet.Emotes.Select(e =>
             {
-                var root = document.RootElement;
-                var emotes = root.GetProperty("emote_set").GetProperty("emotes");
+                var nameInChat = e.Name;
+                var canonincalName = e.Data.CanonicalName;
+                var emoteIsAliased = nameInChat != canonincalName;
 
-                var sevenEmotes = emotes.EnumerateArray().Select(e =>
+                // The first emote file is the smallest, I will take that one
+                var emoteFile = e.Data.Host.Files.First();
+
+                return new SevenEmote
                 {
-                    var alias = e.GetProperty("name").ToString();
-                    var canonicalName = e.GetProperty("data").GetProperty("name").ToString();
-                    var emoteIsAliased = alias != canonicalName;
+                    Id = e.Id,
+                    CanonicalName = canonincalName,
+                    Alias = emoteIsAliased ? nameInChat : null,
+                    Width = emoteFile.Width,
+                    Height = emoteFile.Height,
+                    IsListed = e.Data.Listed,
+                };
+            });
 
-                    // Get first file element for smallest
-                    var fileData = e.GetProperty("data").GetProperty("host").GetProperty("files")
-                    .EnumerateArray().First();
+            // Turns out the 7TV API sometimes returns duplicate IDs i.e. the same emote more than once
+            // Remove duplicates
+            var unique = sevenEmotes.DistinctBy(e => e.Id);
 
-                    return new SevenEmote
-                    {
-                        Id = e.GetProperty("id").ToString(),
-                        CanonicalName = canonicalName,
-                        Alias = emoteIsAliased ? alias : null,
-                        Width = fileData.GetProperty("width").GetInt32(),
-                        Height = fileData.GetProperty("height").GetInt32(),
-                        IsListed = true,
-                    };
-                }).ToList();
+            return unique;
+        }
 
-                // Turns out the 7TV API sometimes returns duplicate IDs i.e. the same emote more than once
-                // Remove duplicates
-                var seenIds = new HashSet<string>();
-                var result = new List<IProviderEmote>(sevenEmotes.Count);
+        private class SevenResponse
+        {
+            [JsonPropertyName("emote_set")]
+            public SevenEmoteSet EmoteSet { get; set; }
+        }
 
-                foreach (var emote in sevenEmotes)
-                {
-                    if (seenIds.Add(emote.Id)) // Add returns false if already present
-                    {
-                        result.Add(emote);
-                    }
-                }
+        private class SevenEmoteSet
+        {
+            [JsonPropertyName("emotes")]
+            public List<SevenEmoticon> Emotes { get; set; }
+        }
 
-                return result;
-            }
+        private class SevenEmoticon
+        {
+            [JsonPropertyName("id")]
+            public string Id { get; set; }
+
+            [JsonPropertyName("name")]
+            public string Name { get; set; }
+
+            [JsonPropertyName("data")]
+            public EmoteData Data { get; set; }
+        }
+
+        private class EmoteData
+        {
+            [JsonPropertyName("name")]
+            public string CanonicalName { get; set; }
+
+            [JsonPropertyName("listed")]
+            public bool Listed { get; set; }
+
+            [JsonPropertyName("host")]
+            public EmoteHost Host { get; set; }
+        }
+
+        private class EmoteHost
+        {
+            [JsonPropertyName("files")]
+            public List<EmoteFile> Files { get; set; }
+        }
+
+        private class EmoteFile
+        {
+            [JsonPropertyName("width")]
+            public int Width { get; set; }
+
+            [JsonPropertyName("height")]
+            public int Height { get; set; }
         }
     }
 }

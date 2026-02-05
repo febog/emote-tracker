@@ -2,6 +2,6 @@
 {
     public interface IEmoteProviderService
     {
-        Task<List<IProviderEmote>> GetChannelEmotes(string channelId);
+        Task<IEnumerable<IProviderEmote>> GetChannelEmotes(string channelId);
     }
 }
