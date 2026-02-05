@@ -9,29 +9,16 @@ using Microsoft.EntityFrameworkCore;
 namespace EmoteTracker.Services
 {
     public class EmoteTrackerService(EmoteTrackerContext context,
-        IFrankerService frankerService,
-        IBttvService bttvService,
-        ISevenService sevenService,
+        IChannelEmotesService channelEmotesService,
         ITwitchService twitchService) : IEmoteTrackerService
     {
         private readonly EmoteTrackerContext _context = context;
-        private readonly IFrankerService _frankerService = frankerService;
-        private readonly IBttvService _bttvService = bttvService;
-        private readonly ISevenService _sevenService = sevenService;
+        private readonly IChannelEmotesService _channelEmotesService = channelEmotesService;
         private readonly ITwitchService _twitchService = twitchService;
 
         public async Task RefreshChannelEmotes(string channelId)
         {
-            var frankerEmotes = await _frankerService.GetProviderEmotes(channelId);
-            if (frankerEmotes == null) throw new ArgumentException("Franker emotes could not be loaded.");
-
-            var bttvEmotes = await _bttvService.GetProviderEmotes(channelId);
-            if (bttvEmotes == null) throw new ArgumentException("BTTV emotes could not be loaded.");
-
-            var sevenEmotes = await _sevenService.GetProviderEmotes(channelId);
-            if (sevenEmotes == null) throw new ArgumentException("SevenTV emotes could not be loaded.");
-
-            var trackedEmotes = frankerEmotes.Concat(bttvEmotes).Concat(sevenEmotes);
+            var trackedEmotes = await _channelEmotesService.GetChannelEmotes(channelId);
 
             var channelToUpdate = await _context.TwitchChannels
                 .Include(c => c.TwitchChannelEmotes)
