@@ -22,13 +22,13 @@ namespace EmoteTracker.Services
 
         public async Task RefreshChannelEmotes(string channelId)
         {
-            var frankerEmotes = await _frankerService.GetChannelEmotes(channelId);
+            var frankerEmotes = await _frankerService.GetProviderEmotes(channelId);
             if (frankerEmotes == null) throw new ArgumentException("Franker emotes could not be loaded.");
 
-            var bttvEmotes = await _bttvService.GetChannelEmotes(channelId);
+            var bttvEmotes = await _bttvService.GetProviderEmotes(channelId);
             if (bttvEmotes == null) throw new ArgumentException("BTTV emotes could not be loaded.");
 
-            var sevenEmotes = await _sevenService.GetChannelEmotes(channelId);
+            var sevenEmotes = await _sevenService.GetProviderEmotes(channelId);
             if (sevenEmotes == null) throw new ArgumentException("SevenTV emotes could not be loaded.");
 
             var trackedEmotes = frankerEmotes.Concat(bttvEmotes).Concat(sevenEmotes);

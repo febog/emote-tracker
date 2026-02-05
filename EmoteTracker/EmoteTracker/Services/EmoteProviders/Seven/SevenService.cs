@@ -17,7 +17,7 @@ namespace EmoteTracker.Services.EmoteProviders.Seven
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<IProviderEmote>> GetChannelEmotes(string channelId)
+        public async Task<IEnumerable<IProviderEmote>> GetProviderEmotes(string channelId)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
