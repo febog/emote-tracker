@@ -1,43 +1,30 @@
 using EmoteTracker.Data;
-using EmoteTracker.Models;
 using EmoteTracker.Services;
-using EmoteTracker.Services.EmoteProviders;
+using EmoteTracker.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace EmoteTracker.Pages
 {
-    public class TwitchChannelModel(IEmoteTrackerService tracker,
-        ITwitchService twitchService,
-        EmoteTrackerContext context) : PageModel
+    public class TwitchChannelModel(IEmoteTrackerService tracker) : PageModel
     {
         private readonly IEmoteTrackerService _tracker = tracker;
-        private readonly ITwitchService _twitchService = twitchService;
-        private readonly EmoteTrackerContext _context = context;
 
-        public TwitchChannel TwitchChannel { get; set; }
-        public List<IProviderEmote> ChannelEmotes { get; set; }
+        public TrackedChannel TrackedChannel { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string channel, bool refresh = false)
         {
-            var channelId = await _twitchService.GetTwitchId(channel);
-            if (string.IsNullOrEmpty(channelId))
+            if (string.IsNullOrEmpty(channel))
             {
                 return NotFound();
             }
 
-            // Check if previously tracked
-            var channelData = await _context.TwitchChannels.FindAsync(channelId);
+            TrackedChannel = await _tracker.GetChannelData(channel, refresh);
 
-            if (channelData == null)
+            if (TrackedChannel == null)
             {
-                await _tracker.RefreshChannelEmotes(channelId);
-                channelData = await _context.TwitchChannels.FindAsync(channelId);
+                return NotFound();
             }
-
-            TwitchChannel = channelData;
-
-            ChannelEmotes = await _tracker.GetChannelEmotes(channelId, refresh);
 
             return Page();
         }

@@ -17,11 +17,11 @@ namespace EmoteTracker.ViewModels
 
         public bool IsListed { get; set; }
 
-        public EmoteSource Type { get; }
+        public EmoteSource Type { get; set; }
 
-        public string EmotePage { get; }
+        public string EmotePage { get; set; }
 
-        public string ImageUrl { get; }
+        public string ImageUrl { get; set; }
     }
 
     public enum EmoteSource

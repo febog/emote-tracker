@@ -1,10 +1,10 @@
-﻿using EmoteTracker.Services.EmoteProviders;
+﻿using EmoteTracker.ViewModels;
 
 namespace EmoteTracker.Services
 {
     public interface IEmoteTrackerService
     {
         Task RefreshChannelEmotes(string channelId);
-        Task<List<IProviderEmote>> GetChannelEmotes(string channelId, bool forceRefresh = false);
+        Task<TrackedChannel> GetChannelData(string channelName, bool forceRefresh = false);
     }
 }

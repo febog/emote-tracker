@@ -1,7 +1,7 @@
 ﻿@page "{channel?}"
 @model EmoteTracker.Pages.TwitchChannelModel
 
-<h1>@Html.DisplayFor(m => m.TwitchChannel.DisplayName)'s emotes</h1>
+<h1>@Html.DisplayFor(m => m.TrackedChannel.DisplayName)'s emotes</h1>
 
 <p class="lead">Summary of the chat emotes from different extensions enabled in the channel.</p>
 
@@ -26,23 +26,23 @@
 </search>
 
 <table class="table caption-top" id="emote-table">
-    <caption>Showing <span id="visible-emote-count">@Html.DisplayFor(model => model.ChannelEmotes.Count)</span> emotes of @Html.DisplayFor(model => model.ChannelEmotes.Count).</caption>
+    <caption>Showing <span id="visible-emote-count">@Html.DisplayFor(model => model.TrackedChannel.TrackedEmotes.Count)</span> emotes of @Html.DisplayFor(model => model.TrackedChannel.TrackedEmotes.Count).</caption>
     <thead>
         <tr>
             <th>Emote</th>
             <th>
-                @Html.DisplayNameFor(model => model.ChannelEmotes[0].CanonicalName)
+                @Html.DisplayNameFor(model => model.TrackedChannel.TrackedEmotes[0].CanonicalName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ChannelEmotes[0].Id)
+                @Html.DisplayNameFor(model => model.TrackedChannel.TrackedEmotes[0].Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ChannelEmotes[0].Provider)
+                @Html.DisplayNameFor(model => model.TrackedChannel.TrackedEmotes[0].Type)
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var emote in Model.ChannelEmotes)
+        @foreach (var emote in Model.TrackedChannel.TrackedEmotes)
         {
             <tr>
                 <td class="align-middle" style="width: 1px">
@@ -50,18 +50,18 @@
                          width="@emote.Width"
                          height="@emote.Height"
                          src="@emote.ImageUrl"
-                         alt="@emote.CanonicalName emote in @Html.DisplayFor(modelItem => emote.Provider)"
-                         title="@emote.CanonicalName emote in @Html.DisplayFor(modelItem => emote.Provider)" />
+                         alt="@emote.CanonicalName emote in @Html.DisplayFor(modelItem => emote.Type)"
+                         title="@emote.CanonicalName emote in @Html.DisplayFor(modelItem => emote.Type)" />
                 </td>
                 <td class="align-middle">
                     @Html.DisplayFor(modelItem => emote.CanonicalName)
                 </td>
                 <td class="align-middle">
                     <a href="@emote.EmotePage" target="_blank" rel="noopener noreferrer"
-                       title="Go to @emote.CanonicalName emote page in @Html.DisplayFor(modelItem => emote.Provider)">@Html.DisplayFor(modelItem => emote.Id)</a>
+                       title="Go to @emote.CanonicalName emote page in @Html.DisplayFor(modelItem => emote.Type)">@Html.DisplayFor(modelItem => emote.Id)</a>
                 </td>
                 <td class="align-middle">
-                    @Html.DisplayFor(modelItem => emote.Provider)
+                    @Html.DisplayFor(modelItem => emote.Type)
                 </td>
             </tr>
         }

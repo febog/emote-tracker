@@ -4,6 +4,7 @@ using EmoteTracker.Services.EmoteProviders;
 using EmoteTracker.Services.EmoteProviders.Bttv;
 using EmoteTracker.Services.EmoteProviders.Franker;
 using EmoteTracker.Services.EmoteProviders.Seven;
+using EmoteTracker.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmoteTracker.Services
@@ -52,7 +53,7 @@ namespace EmoteTracker.Services
                         Width = emote.Width,
                         Height = emote.Height,
                         IsListed = emote.IsListed,
-                        EmoteType = MapEmoteType(emote.Provider),
+                        EmoteType = MapEmoteTypeToDatabase(emote.Provider),
                     });
                 }
             }
@@ -73,7 +74,7 @@ namespace EmoteTracker.Services
             await _context.SaveChangesAsync();
         }
 
-        private static EmoteType MapEmoteType(EmoteProvider type)
+        private static EmoteType MapEmoteTypeToDatabase(EmoteProvider type)
         {
             switch (type)
             {
@@ -89,68 +90,105 @@ namespace EmoteTracker.Services
                     return EmoteType.Other;
             }
         }
-
-        public async Task<List<IProviderEmote>> GetChannelEmotes(string channelId, bool forceRefresh = false)
+        public async Task<TrackedChannel> GetChannelData(string channelName, bool forceRefresh = false)
         {
+            var channelId = await _twitchService.GetTwitchId(channelName);
+
+            if (channelId == null) return null;
+
+            if (forceRefresh || !await _context.TwitchChannels.AnyAsync(c => c.Id == channelId))
+            {
+                await RefreshChannelEmotes(channelId);
+            }
+
             var channelData = await _context.TwitchChannels
                     .Include(c => c.TwitchChannelEmotes.OrderBy(e => e.CanonicalName))
                     .AsNoTracking()
                     .FirstOrDefaultAsync(c => c.Id == channelId);
 
-            if (channelData == null || forceRefresh)
+            var emotes = channelData.TwitchChannelEmotes.Select(e => MapProviderEmoteToViewModel(MapDatabaseEmoteToProviderEmote(e)));
+
+            return new TrackedChannel
             {
-                await RefreshChannelEmotes(channelId);
-                channelData = await _context.TwitchChannels
-                    .Include(c => c.TwitchChannelEmotes.OrderBy(e => e.CanonicalName))
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(c => c.Id == channelId);
+                ChannelId = channelId,
+                DisplayName = channelData.DisplayName,
+                TrackedEmotes = emotes.ToList(),
+            };
+        }
+
+        private static IProviderEmote MapDatabaseEmoteToProviderEmote(TwitchChannelEmote e)
+        {
+            IProviderEmote emote;
+            switch (e.EmoteType)
+            {
+                case EmoteType.FrankerEmote:
+                    emote = new FrankerEmote
+                    {
+                        Id = e.EmoteId,
+                        CanonicalName = e.CanonicalName,
+                        Width = e.Width,
+                        Height = e.Height,
+                        IsListed = e.IsListed,
+                    };
+                    break;
+                case EmoteType.BttvEmote:
+                    emote = new BttvEmote
+                    {
+                        Id = e.EmoteId,
+                        CanonicalName = e.CanonicalName,
+                        Width = e.Width,
+                        Height = e.Height,
+                        IsListed = e.IsListed,
+                    };
+                    break;
+                case EmoteType.SevenEmote:
+                    emote = new SevenEmote
+                    {
+                        Id = e.EmoteId,
+                        CanonicalName = e.CanonicalName,
+                        Alias = e.Alias,
+                        Width = e.Width,
+                        Height = e.Height,
+                        IsListed = e.IsListed,
+                    };
+                    break;
+                default:
+                    throw new ArgumentException("Emote type error.");
             }
+            return emote;
+        }
 
-            var emotes = new List<IProviderEmote>(channelData.TwitchChannelEmotes.Count);
-
-            emotes.AddRange(channelData.TwitchChannelEmotes.Select(e =>
+        private static TrackedEmote MapProviderEmoteToViewModel(IProviderEmote e)
+        {
+            return new TrackedEmote
             {
-                IProviderEmote emote;
-                switch(e.EmoteType)
-                {
-                    case EmoteType.FrankerEmote:
-                        emote = new FrankerEmote
-                        {
-                            Id = e.EmoteId,
-                            CanonicalName = e.CanonicalName,
-                            Width = e.Width,
-                            Height = e.Height,
-                            IsListed = e.IsListed,
-                        };
-                        break;
-                    case EmoteType.BttvEmote:
-                        emote = new BttvEmote
-                        {
-                            Id = e.EmoteId,
-                            CanonicalName = e.CanonicalName,
-                            Width = e.Width,
-                            Height = e.Height,
-                            IsListed = e.IsListed,
-                        };
-                        break;
-                    case EmoteType.SevenEmote:
-                        emote = new SevenEmote
-                        {
-                            Id = e.EmoteId,
-                            CanonicalName = e.CanonicalName,
-                            Alias = e.Alias,
-                            Width = e.Width,
-                            Height = e.Height,
-                            IsListed = e.IsListed,
-                        };
-                        break;
-                    default:
-                        throw new ArgumentException("Emote type error.");
-                }
-                return emote;
-            }));
+                Id = e.Id,
+                CanonicalName = e.CanonicalName,
+                Alias = e.Alias,
+                Width = e.Width,
+                Height = e.Height,
+                IsListed = e.IsListed,
+                Type = MapEmoteTypeToViewModel(e.Provider),
+                EmotePage = e.EmotePage,
+                ImageUrl = e.ImageUrl,
+            };
+        }
 
-            return emotes;
+        private static EmoteSource MapEmoteTypeToViewModel(EmoteProvider type)
+        {
+            switch (type)
+            {
+                case EmoteProvider.Unknown:
+                    return EmoteSource.Unknown;
+                case EmoteProvider.FrankerEmote:
+                    return EmoteSource.FrankerEmote;
+                case EmoteProvider.BttvEmote:
+                    return EmoteSource.BttvEmote;
+                case EmoteProvider.SevenEmote:
+                    return EmoteSource.SevenEmote;
+                default:
+                    return EmoteSource.Unknown;
+            }
         }
     }
 }

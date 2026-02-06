@@ -10,6 +10,6 @@ namespace EmoteTracker.ViewModels
         [Display(Name = "TWITCH_CHANNEL_DISPLAY_NAME")]
         public string DisplayName { get; set; }
 
-        public ICollection<TrackedEmote> TrackedEmotes { get; set; }
+        public IList<TrackedEmote> TrackedEmotes { get; set; }
     }
 }
