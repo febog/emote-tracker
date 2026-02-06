@@ -55,7 +55,7 @@ namespace EmoteTracker.Services
                     PropertyNameCaseInsensitive = true
                 };
                 var data = await JsonSerializer.DeserializeAsync<TwitchUserResponse>(content, options);
-                if (data.Data.Count == 0)
+                if (data == null || data.Data.Count == 0)
                 {
                     return null;
                 }
@@ -91,7 +91,7 @@ namespace EmoteTracker.Services
 
                 var content = await response.Content.ReadAsStreamAsync();
                 var data = await JsonSerializer.DeserializeAsync<TwitchUserResponse>(content);
-                if (data.Data.Count == 0)
+                if (data == null || data.Data.Count == 0)
                 {
                     return null;
                 }
