@@ -12,14 +12,31 @@ namespace EmoteTracker.Pages
 
         public TrackedChannel TrackedChannel { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string channel, bool refresh = false)
+        public async Task<IActionResult> OnGetAsync(string channel)
         {
             if (string.IsNullOrEmpty(channel))
             {
                 return NotFound();
             }
 
-            TrackedChannel = await _tracker.GetChannelData(channel, refresh);
+            TrackedChannel = await _tracker.GetChannelData(channel);
+
+            if (TrackedChannel == null)
+            {
+                return NotFound();
+            }
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(string channel, bool refresh)
+        {
+            if (string.IsNullOrEmpty(channel))
+            {
+                return NotFound();
+            }
+
+            TrackedChannel = await _tracker.GetChannelData(channel, true);
 
             if (TrackedChannel == null)
             {
