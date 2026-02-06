@@ -1,4 +1,3 @@
-using EmoteTracker.Data;
 using EmoteTracker.Services;
 using EmoteTracker.ViewModels;
 using Microsoft.AspNetCore.Mvc;
