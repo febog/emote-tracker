@@ -17,7 +17,7 @@ namespace EmoteTracker.Services
         private readonly IChannelEmotesService _channelEmotesService = channelEmotesService;
         private readonly ITwitchService _twitchService = twitchService;
 
-        public async Task RefreshChannelEmotes(string channelId)
+        private async Task RefreshChannelEmotes(string channelId)
         {
             var trackedEmotes = await _channelEmotesService.GetChannelEmotes(channelId);
 
