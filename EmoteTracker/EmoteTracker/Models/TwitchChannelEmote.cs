@@ -9,7 +9,6 @@ namespace EmoteTracker.Models
     {
         [Key, Column(Order = 1)]
         [StringLength(30)]
-        [Display(Name = "EMOTE_ID")]
         public string EmoteId { get; set; }
 
         [Key, Column(Order = 2)]
@@ -18,7 +17,6 @@ namespace EmoteTracker.Models
 
         [Required]
         [StringLength(255)]
-        [Display(Name = "EMOTE_CANONICAL_NAME")]
         public string CanonicalName { get; set; }
 
         public int Width { get; set; }
@@ -30,7 +28,6 @@ namespace EmoteTracker.Models
         [StringLength(255)]
         public string Alias { get; set; }
 
-        [Display(Name = "EMOTE_EMOTE_TYPE")]
         public EmoteType EmoteType { get; set; }
 
         public TwitchChannel TwitchChannel { get; set; }
