@@ -36,7 +36,7 @@ namespace EmoteTracker.Pages
                 return NotFound();
             }
 
-            TrackedChannel = await _tracker.GetChannelData(channel, true);
+            TrackedChannel = await _tracker.GetChannelData(channel, refresh);
 
             if (TrackedChannel == null)
             {
