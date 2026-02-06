@@ -17,15 +17,14 @@ namespace EmoteTracker.ViewModels
 
         public bool IsListed { get; set; }
 
-        [Display(Name = "Type")]
-        public EmoteProvider Provider { get; }
+        public EmoteSource Type { get; }
 
         public string EmotePage { get; }
 
         public string ImageUrl { get; }
     }
 
-    public enum EmoteProvider
+    public enum EmoteSource
     {
         // Do not reorder
         Unknown = 0,
