@@ -29,6 +29,8 @@ namespace EmoteTracker
                 options.ClientSecret = builder.Configuration["Twitch:AppClientSecret"];
             });
 
+            builder.Services.AddHybridCache();
+
             builder.Services.RegisterEmoteTrackerServices(builder.Configuration);
 
             var app = builder.Build();
