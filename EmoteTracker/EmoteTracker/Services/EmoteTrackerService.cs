@@ -6,16 +6,34 @@ using EmoteTracker.Services.EmoteProviders.Franker;
 using EmoteTracker.Services.EmoteProviders.Seven;
 using EmoteTracker.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace EmoteTracker.Services
 {
     public class EmoteTrackerService(EmoteTrackerContext context,
+        HybridCache cache,
         IChannelEmotesService channelEmotesService,
         ITwitchService twitchService) : IEmoteTrackerService
     {
         private readonly EmoteTrackerContext _context = context;
+        private readonly HybridCache _cache = cache;
         private readonly IChannelEmotesService _channelEmotesService = channelEmotesService;
         private readonly ITwitchService _twitchService = twitchService;
+
+        private const string ChannelKey = "t";
+
+        public async Task<TrackedChannel> GetChannelData(string channelName, bool forceRefresh = false, CancellationToken token = default)
+        {
+            if (forceRefresh)
+            {
+                await _cache.RemoveAsync($"{ChannelKey}:{channelName}", token);
+            }
+
+            return await _cache.GetOrCreateAsync(
+                $"{ChannelKey}:{channelName}",
+                async cancel => await GetChannelDataFromSource(channelName, forceRefresh),
+                cancellationToken: token);
+        }
 
         private async Task RefreshChannelEmotes(string channelId)
         {
@@ -90,7 +108,8 @@ namespace EmoteTracker.Services
                     return EmoteType.Other;
             }
         }
-        public async Task<TrackedChannel> GetChannelData(string channelName, bool forceRefresh = false)
+
+        private async Task<TrackedChannel> GetChannelDataFromSource(string channelName, bool forceRefresh = false)
         {
             var channelId = await _twitchService.GetTwitchId(channelName);
 
