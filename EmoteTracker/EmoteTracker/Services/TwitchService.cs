@@ -99,13 +99,13 @@ namespace EmoteTracker.Services
             }
         }
 
-        public class TwitchUserResponse
+        private class TwitchUserResponse
         {
             [JsonPropertyName("data")]
             public List<TwitchUser> Data { get; set; }
         }
 
-        public class TwitchUser
+        private class TwitchUser
         {
             [JsonPropertyName("id")]
             public string Id { get; set; }
