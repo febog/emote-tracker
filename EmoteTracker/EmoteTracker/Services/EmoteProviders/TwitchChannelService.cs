@@ -16,9 +16,9 @@ namespace EmoteTracker.Services.EmoteProviders
             _emoteProviders = [bttvService, frankerService, sevenService];
         }
 
-        public async Task<IEnumerable<IProviderEmote>> GetChannelEmotes(string channelId)
+        public async Task<IEnumerable<IProviderEmote>> GetChannelEmotes(string channelId, CancellationToken token = default)
         {
-            var results = await Task.WhenAll(_emoteProviders.Select(s => s.GetProviderEmotes(channelId)));
+            var results = await Task.WhenAll(_emoteProviders.Select(s => s.GetProviderEmotes(channelId, token)));
             var channelEmotes = results.SelectMany(emotes => emotes);
 
             return channelEmotes;
