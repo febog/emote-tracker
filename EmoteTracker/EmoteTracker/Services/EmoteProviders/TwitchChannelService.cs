@@ -4,11 +4,11 @@ using EmoteTracker.Services.EmoteProviders.Seven;
 
 namespace EmoteTracker.Services.EmoteProviders
 {
-    public class PurpleChannelService : IPurpleChannelService
+    public class TwitchChannelService : ITwitchChannelService
     {
         private readonly IReadOnlyCollection<IPurpleEmoteProviderService> _emoteProviders;
 
-        public PurpleChannelService(
+        public TwitchChannelService(
             IBttvService bttvService,
             IFrankerService frankerService,
             ISevenService sevenService)

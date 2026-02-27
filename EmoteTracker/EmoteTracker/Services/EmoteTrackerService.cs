@@ -12,12 +12,12 @@ namespace EmoteTracker.Services
 {
     public class EmoteTrackerService(EmoteTrackerContext context,
         HybridCache cache,
-        IPurpleChannelService channelEmotesService,
+        ITwitchChannelService channelEmotesService,
         ITwitchService twitchService) : IEmoteTrackerService
     {
         private readonly EmoteTrackerContext _context = context;
         private readonly HybridCache _cache = cache;
-        private readonly IPurpleChannelService _channelEmotesService = channelEmotesService;
+        private readonly ITwitchChannelService _channelEmotesService = channelEmotesService;
         private readonly ITwitchService _twitchService = twitchService;
 
         private const string ChannelKey = "t";
