@@ -16,14 +16,14 @@ namespace EmoteTracker.Services.EmoteProviders.Franker
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<IProviderEmote>> GetProviderEmotes(string channelId)
+        public async Task<IEnumerable<IProviderEmote>> GetProviderEmotes(string channelId, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
-            var response = await _httpClient.GetAsync(channelId);
+            var response = await _httpClient.GetAsync(channelId, token);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
-            var content = await response.Content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<FrankerResponse>(content);
+            var content = await response.Content.ReadAsStreamAsync(token);
+            var data = await JsonSerializer.DeserializeAsync<FrankerResponse>(content, cancellationToken: token);
             var setId = data.Room.Set;
             var frankerEmotes = data.Sets[setId.ToString()].Emoticons.Select(e =>
             {

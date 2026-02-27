@@ -17,14 +17,14 @@ namespace EmoteTracker.Services.EmoteProviders.Seven
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<IProviderEmote>> GetProviderEmotes(string channelId)
+        public async Task<IEnumerable<IProviderEmote>> GetProviderEmotes(string channelId, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
-            var response = await _httpClient.GetAsync(channelId);
+            var response = await _httpClient.GetAsync(channelId, token);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
-            var content = await response.Content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<SevenResponse>(content);
+            var content = await response.Content.ReadAsStreamAsync(token);
+            var data = await JsonSerializer.DeserializeAsync<SevenResponse>(content, cancellationToken: token);
             var sevenEmotes = data.EmoteSet.Emotes.Select(e =>
             {
                 var nameInChat = e.Name;

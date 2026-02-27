@@ -16,14 +16,14 @@ namespace EmoteTracker.Services.EmoteProviders.Bttv
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<IProviderEmote>> GetProviderEmotes(string channelId)
+        public async Task<IEnumerable<IProviderEmote>> GetProviderEmotes(string channelId, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(channelId)) return null;
 
-            var response = await _httpClient.GetAsync(channelId);
+            var response = await _httpClient.GetAsync(channelId, token);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
-            var content = await response.Content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<BttvResponse>(content);
+            var content = await response.Content.ReadAsStreamAsync(token);
+            var data = await JsonSerializer.DeserializeAsync<BttvResponse>(content, cancellationToken: token);
             var bttvEmotes = data.ChannelEmotes.Concat(data.SharedEmotes).Select(e => new BttvEmote
             {
                 Id = e.Id,
