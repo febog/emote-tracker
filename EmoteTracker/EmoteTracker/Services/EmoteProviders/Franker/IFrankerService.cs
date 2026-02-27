@@ -1,6 +1,6 @@
 ﻿namespace EmoteTracker.Services.EmoteProviders.Franker
 {
-    public interface IFrankerService : IEmoteProviderService
+    public interface IFrankerService : IPurpleEmoteProviderService
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace EmoteTracker.Services.EmoteProviders.Bttv
 {
-    public interface IBttvService : IEmoteProviderService
+    public interface IBttvService : IPurpleEmoteProviderService
     {
     }
 }

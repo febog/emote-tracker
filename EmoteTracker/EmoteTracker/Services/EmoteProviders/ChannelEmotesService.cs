@@ -6,7 +6,7 @@ namespace EmoteTracker.Services.EmoteProviders
 {
     public class ChannelEmotesService : IChannelEmotesService
     {
-        private readonly IReadOnlyCollection<IEmoteProviderService> _emoteProviders;
+        private readonly IReadOnlyCollection<IPurpleEmoteProviderService> _emoteProviders;
 
         public ChannelEmotesService(
             IBttvService bttvService,
