@@ -12,7 +12,7 @@ namespace EmoteTracker.Services
 
             services.AddTransient<IEmoteTrackerService, EmoteTrackerService>();
 
-            services.AddTransient<IChannelEmotesService, ChannelEmotesService>();
+            services.AddTransient<IPurpleChannelService, PurpleChannelService>();
 
             return services;
         }

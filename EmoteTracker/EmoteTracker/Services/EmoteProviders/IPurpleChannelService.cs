@@ -1,6 +1,6 @@
 ﻿namespace EmoteTracker.Services.EmoteProviders
 {
-    public interface IChannelEmotesService
+    public interface IPurpleChannelService
     {
         Task<IEnumerable<IProviderEmote>> GetChannelEmotes(string channelId);
     }
