@@ -25,6 +25,7 @@ namespace EmoteTracker.Services.EmoteProviders.Seven
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
             var content = await response.Content.ReadAsStreamAsync(token);
             var data = await JsonSerializer.DeserializeAsync<SevenResponse>(content, cancellationToken: token);
+            if (data.EmoteSet.Emotes == null) return [];
             var sevenEmotes = data.EmoteSet.Emotes.Select(e =>
             {
                 var nameInChat = e.Name;
