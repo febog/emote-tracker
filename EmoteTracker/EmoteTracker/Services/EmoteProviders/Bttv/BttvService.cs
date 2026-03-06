@@ -18,7 +18,7 @@ namespace EmoteTracker.Services.EmoteProviders.Bttv
 
         public async Task<IEnumerable<IProviderEmote>> GetProviderEmotes(string channelId, CancellationToken token = default)
         {
-            if (string.IsNullOrWhiteSpace(channelId)) return null;
+            if (string.IsNullOrWhiteSpace(channelId)) return [];
 
             var response = await _httpClient.GetAsync(channelId, token);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return [];
